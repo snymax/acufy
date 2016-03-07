@@ -20,3 +20,6 @@ $('selector').acufy({
 
 REQUEST:
 This is my first jquery plugin that I am publishing and I am open to criticism. I am doing this as a learning experience. tell me what you think.
+
+EXAMPLE:
+http://irwinproject.com/defout
