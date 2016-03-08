@@ -12,7 +12,7 @@ WARNING this plugin generates a unique svg every time the function is run, the s
 
 USAGE:
 $('selector').acufy({
-  del:10 //default width and height of each digi box
+  size:10 //default width and height of each digi box
   colors:['#1D1A13', '#806C3A', '#4D5B38']; //colors must be arrays for now, I will consider adding text support using comma separated values
 });
 
