@@ -6,7 +6,7 @@
                 $(elem).acufy(options);
             });
         }else{
-            var del = options.del || 10;
+            var del = options.size || 10;
             var height = this.outerHeight();
             var width = this.outerWidth();
             var hcount = Math.ceil(height/del);
