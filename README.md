@@ -27,4 +27,4 @@ tell me what you think.
 
 ## Demo
 
-[Here is a demo](http://irwinproject.com/defout) using the colors in the usage example above
+[Here is a demo](http://irwinproject.com/demo) using the colors in the usage example above
