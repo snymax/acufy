@@ -1,3 +1,91 @@
+function SVG(options){
+    this.svgns = 'http://www.w3.org/2000/svg';
+    this.encodeHeader = "data:image/svg+xml;charset=utf-8,";
+    this.xmls = new XMLSerializer;
+    this.handleProperties = function(properties){
+        properties = this.standardizeOptions(options);
+        this.elem = this.elem || document.createElementNS(this.svgns, options.tag || 'svg');
+        if(properties.tag === 'svg'){
+            this.setProperties(properties, ['width', 'height']);
+        }else{
+            this.setProperties(properties, ['width', 'height', 'x', 'y', 'fill', 'stroke', 'stroke-width', ''])
+        }
+    }
+    
+    this.setProperties = function(properties, keys){
+        keys = keys || Object.keys(properties);
+        for(var i=0, ln = keys.length; i < ln; i++){
+            if(keys[i] === '')continue;
+            this.elem.setAttribute(keys[i], properties[keys[i]]);
+        }
+    }
+    
+    this.standardizeOptions = function(options){
+        var options = options || {};
+        options.tag = options.tag || 'svg';
+        options.tag = options.shape || options.tag;
+        options.width = options.width || '100%';
+        options.height = options.height || '100%';
+        options.charset = 'utf8';
+        options.x = options.x || 0;
+        options.y = options.y || 0;
+        options.fill = options.fill || '#000000';
+        options['stroke-width'] = options['stroke-width'] || 0;
+        options.stroke = options.stroke || '#000000';
+        return options
+    }
+    this.addShape = function(options){
+        options = options ? this.standardizeOptions(options) : {};
+        var shape = new SVG(options);
+        this.elem.appendChild(shape.elem);
+        return shape;
+    }
+    this.encodeElem = function(background){
+        var str = this.encodeHeader + this.xmls.serializeToString(this.elem);
+        str = background ? "url('"+str+"')":str;
+        console.log(str, str.replace('/\"/g', "'"));
+        str = str.replace(/\#/g, '%23');
+        
+        return str.replace('/\"/g', "'");
+    }
+    this.setSrc = function(selector){
+        var elems = this.getElem(selector);
+        console.log(elems);
+        for(var i = 0, ln = elems.length; i < ln; i++){
+            elems[i].setAttribute('src', this.encodeElem());
+        }
+    }
+    this.getElem = function(selector){
+        var elems = [];
+        switch(typeof selector){
+            case 'string':
+                console.log('getting elements');
+                elems = document.querySelectorAll(selector);
+                break;
+            case 'object':
+                if(selector.nodeType === 1){
+                    elems.push(selector);  
+                }else if(selector.isArray && selector.isArray()){
+                    elems = selector;
+                }
+                break;
+            default:
+        }
+        return elems;
+    }
+    this.setBg = function(selector){
+        var elems = this.getElem(selector);
+        console.log(elems);
+        for(var i = 0, ln = elems.length; i < ln; i++){
+            var str = this.encodeElem();
+            elems[i].style.backgroundImage = this.encodeElem(true);
+        }
+    }
+    this.handleProperties(options);
+}
+function _type(v){
+    return ({}).toString.call(v).match(/\[[^\[\]\s]*\s([^\[\]\s]*)\]/)[1].toLowerCase();
+}
 (function($){
     $.fn.acufy = function(options){
         options = options || {};
@@ -6,16 +94,18 @@
                 $(elem).acufy(options);
             });
         }else{
-            var del = options.size || 10;
+            
+            var del = options.del || 10;
             var height = this.outerHeight();
             var width = this.outerWidth();
             var hcount = Math.ceil(height/del);
             var wcount = Math.ceil(width/del);
             var svgns = 'http://www.w3.org/2000/svg';
             var colors = options.colors || ['#1D1A13', '#806C3A', '#4D5B38'];
-            var svg = document.createElementNS(svgns, 'svg');
-            svg.setAttribute('width', width + 'px');
-            svg.setAttribute('height', height + 'px');
+            var svg = new SVG({
+                width:width,
+                height:height,
+            });
             var rects = fillarrwitharr(new Array(hcount), wcount);
             var indexList = getIndexList(rects);
             shuffle(indexList);
@@ -23,22 +113,21 @@
                 rects[indexList[i].i][indexList[i].j] = pickColor(rects, colors, indexList[i]);
             }
             mkrects(rects, del, svgns, svg);
-            var xmls = new XMLSerializer();
-            svg = "url('data:image/svg+xml;utf8," + xmls.serializeToString(svg) + "')";
-            this.css('background-image', svg);
+            svg.setBg(this[0]);
         }
     }
 })(jQuery);
 function mkrects(colors, del, svgns, svg){
     for(var i = 0, ln = colors.length; i < ln; i++){
         for(var j = 0, jln = colors[i].length; j < jln;j++){
-            var r = document.createElementNS(svgns, 'rect');
-            r.setAttribute('width', del);
-            r.setAttribute('height', del);
-            r.setAttribute('fill', colors[i][j]);
-            r.setAttribute('x', j * del);
-            r.setAttribute('y', i * del);
-            svg.appendChild(r);
+            svg.addShape({
+                shape:'rect',
+                width:del,
+                height:del,
+                fill:colors[i][j],
+                x:j*del,
+                y:i*del,
+            });
         }
     }
 }
