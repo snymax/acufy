@@ -28,3 +28,6 @@ tell me what you think.
 ## Demo
 
 [Here is a demo](http://irwinproject.com/demo) using the colors in the usage example above
+
+## Bugfix
+- Firefox doesnt like the # character in its uft8, this has been fixed
