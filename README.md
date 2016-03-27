@@ -23,7 +23,7 @@ For right now, the colors must be arrays. I will consider adding text support us
 ## Seed Options
 I plan on elaborating a lot on seed options however for the time being they are rather simple, to pick a color for each individual cell Acufy tests the colors of the blocks directly above, below, left and right. which ever is the most common color it picks, if no neighboring colors it picks a color at random. you can slightly alter the general pattern of your backgrounds by changing the seeding size, for instance you would increase the x seed to make the pattern have more horizontal sections of color. 
 
-# Example
+### Example
 ```js
 $('selector').acufy({
   size:10,
