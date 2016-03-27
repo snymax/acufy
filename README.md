@@ -36,7 +36,7 @@ $('selector').acufy({
     x:2, have it test 2 cells on the left and right rather then just one
     y:1
   }
-
+```
 
 ## Request
 
